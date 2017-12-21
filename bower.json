@@ -1,0 +1,28 @@
+{
+  "name": "quizapp",
+  "description": "Simple QuizApp",
+  "main": "app.js",
+  "authors": [
+    "Khurram Saeed Malik"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "angular",
+    "js"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.7",
+    "bootstrap": "^3.3.7",
+    "lodash": "^4.17.4",
+    "angular-route": "^1.6.7"
+  }
+}
