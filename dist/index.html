@@ -7,10 +7,16 @@
   </head>
   <body ng-controller="quizController">
 
-    {{message}}
-    <button class="btn btn-default" type="button" name="button">{{hello}}</button>
+    <div class="">
+      <div class="container-fluid">
+        <!-- ng-include requires: single quotes for paths inside a stirng -->
+        <div ng-include="'app/templates/menubar.html'" class="">
 
+        </div>
+      </div>
+    </div>
     <script src="src/libs.js"></script>
     <script src="src/app.js"></script>
+    <script src="src/template.js"></script>
   </body>
 </html>
