@@ -26,7 +26,7 @@ gulp.task('appModules', function () {
   return gulp.src('app/js/**/*.js')
       .pipe(ngAnnotate())
       .pipe(angularFileSort())
-      .pipe(concat('script.js'))
+      .pipe(concat('app.js'))
       .pipe(gulp.dest('dist/src'));
 });
 
@@ -50,9 +50,12 @@ gulp.task('index', function () {
       .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('appMain', function() {
-    return gulp.src('app/app.js')
-    .pipe(gulp.dest('dist/'))
+gulp.task('watch', function () {
+  gulp.watch('app/index.html', ['index']);
+  gulp.watch('app/js/**/*.js', ['appModules']);
+  gulp.watch('app/css/*.css', ['css']);
+  gulp.watch('app/templates/**/*.html', ['templates']);
+
 });
 
-gulp.task('build', ['index', 'templates', 'css', 'libs', 'appModules', 'appMain']);
+gulp.task('build', ['index', 'templates', 'css', 'libs', 'appModules']);
