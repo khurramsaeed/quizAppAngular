@@ -1,7 +1,7 @@
 var quizApp = angular.module('quizApp', []);
 
 quizApp.constant('appInformation', {
-  appName: 'Quiz app',
+  appName: 'Quiz Home',
   version: '1.0.0'
 });
 
