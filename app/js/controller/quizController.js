@@ -28,7 +28,7 @@ angular.module('quizApp').controller('quizController', ['$scope', 'Quiz', 'Quest
     $scope.count = 0;
     $scope.countQuestion = 1;
     $scope.questionLimitExceeded = false;
-    
+
     //Validation variables
     $scope.validQuestion = true;
 
@@ -50,4 +50,14 @@ angular.module('quizApp').controller('quizController', ['$scope', 'Quiz', 'Quest
       $scope.quiz = new Quiz();
       $scope.question = new Question();
     };
+
+
+    //This func will create a quiz for us
+    $scope.addQuiz = function () {
+      $scope.validQuestion = ''
+    }
+
+
+
+
 }]);
