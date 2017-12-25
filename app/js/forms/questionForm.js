@@ -1,5 +1,5 @@
 angular.module('quizApp').directive('questionForm', function () {
-  return {
+    return {
     restrict: 'E',
     templateUrl: 'app/templates/forms/questionForm.html'
   }

@@ -1,112 +1,121 @@
 var quizApp = angular.module('quizApp', []);
 
+
 quizApp.constant('appInformation', {
-  appName: 'Quiz Home',
-  version: '1.0.0'
+    appName: "Quiz App",
+    version: "1.0.0"
 });
 
+
 quizApp.constant('appMode', {
-  STARTAPP: '0',
-  CREATEQUIZ: '1',
-  ADDQUESTION: '2',
-  SUCCESSQUIZ: '3',
-  RESULTQUIZ: '4',
-  TAKEQUIZ: '5'
+    STARTAPP: '0',
+    CREATEQUIZ: '1',
+    ADDQUESTION: '2',
+    SUCCESSQUIZ: '3',
+    RESULTQUIZ: '4',
+    TAKEQUIZ: '5'
 });
 
 quizApp.constant('takeQuizMode', {
-  SELECTQUIZ: '6',
-  TAKEQUESTION: '7',
-  SHOWRESULT: '8'
+    SELECTQUIZ: '6',
+    TAKEQUESTION: '7',
+    SHOWRESULTS: '8'
 });
 
-angular.module('quizApp').service('quizHelper'['Question', 'Quiz', function (Quiz, Question) {
+angular.module('quizApp').service('quizHelper', ['Question', 'Quiz', function (Quiz,
+                                                                               Question) {
+    var self = this;
 
-  var self = this;
-  var questionArray = [];
-  this.quiz = {};
-  var count = 0;
+    this.quiz = {};
+    var questionArray = [];
+    var count = 0;
 
-  var addQuiz = function (quiz) {
-    self.quiz = quiz;
-  }
+    var addQuiz = function (quiz) {
+        self.quiz = quiz;
+    };
 
-  var loadQuiz = function (quiz) {
-    quizAppScope.quiz = new Quiz();
-    quizAppScope.quiz = JSON.parse(quiz);
-    if (quizAppScope.quiz.quizName !== "") {
-      quizAppScope.quizLoaded = true;
-    }
-  };
+    var sendQuestion = function (question) {
+        self.question = question;
+        if (count <= self.quiz.questionLength) {
+            pushQuestionToArray(self.question);
+            count++;
+        } else {
+            alert("Question Limit Exceeded");
+        }
+    };
 
+    var checkValidQuestion = function (question) {
+        let validQuestion = false;
+        _.forIn(question, function (value, key) {
+            if (value !== "") {
+                validQuestion = true;
+            } else {
+                return validQuestion = false;
+            }
+        });
+        _.forIn(question.choices, function (value, key) {
+            if (value !== "") {
+                validQuestion = true;
+            } else {
+                return validQuestion = false;
+            }
+        });
+        return validQuestion;
+    };
 
-  var saveQuizToJson = function (quiz) {
-    var data = JSON.stringify(quiz);
-    var blob = new Blob([data], {
-      type: 'text/json;charset=utf-8'
-    })
-  };
+    var pushQuestionToArray = function (question) {
+        questionArray.push(question);
+    };
 
-  var sendQuestion = function (question) {
-    self.question = question;
-    if (count <= self.quiz.questionLength) {
-      pushQuestionToArray(self.question);
-      count++;
-    } else {
-      console.log("Question limit exceeded.");
-    }
-  };
+    var addQuestionToQuiz = function (quiz) {
+        questionArray.forEach(function (choice) {
+           let choices = choice;
+           quiz.questions.push(choices);
+        });
+    };
 
-  var pushQuestionToArray = function (question) {
-    questionArray.push(question);
-  };
+    var jsonToParse = function () {
+        return questionArray;
+    };
 
-  var addQuestionToQuiz = function (quiz) {
-    questionArray.forEach(function (choice) {
-      var choices = choice;
-      quiz.questions.push(choices);
-    })
-  };
+    var saveQuizToJSON = function (quiz) {
+        var data = JSON.stringify(quiz);
+        var blob = new Blob([data], {type: "text/json;charset=utf-8"});
+        saveAs(blob, 'quiz.json');
+    };
 
-  var jsonToParse = function () {
-    return questionArray;
-  };
+    var loadQuiz = function (quiz) {
+        quizAppScope.quiz = new Quiz();
+        quizAppScope.quiz = JSON.parse(quiz);
+        if (quizAppScope.quiz.quizName !== "") {
+            quizAppScope.quizLoaded = true;
+        }
 
-  var checkValidQuestion = function (question) {
-    var validQuestion = false;
-    _.forIn(question, function (value, key) {
-      if (value !== "") {
-        validQuestion = true;
-      } else {
-        validQuestion = false;
-      }
-    });
-    return validQuestion;
-  };
+    };
 
-  this.addQuiz = addQuiz;
-  this.sendQuestion = sendQuestion;
-  this.checkValidQuestion = checkValidQuestion;
-  this.pushQuestionToArray = pushQuestionToArray;
-  this.jsonToParse = jsonToParse;
-  this.addQuestionToQuiz = addQuestionToQuiz;
-  this.saveQuizToJson = saveQuizToJson;
-  this.loadQuiz = loadQuiz;
+    this.addQuiz = addQuiz;
+    this.sendQuestion = sendQuestion;
+    this.checkValidQuestion = checkValidQuestion;
+    this.pushQuestionToArray = pushQuestionToArray;
+    this.jsonToParse = jsonToParse;
+    this.addQuestionToQuiz = addQuestionToQuiz;
+    this.saveQuizToJSON = saveQuizToJSON;
+    this.loadQuiz = loadQuiz;
 
 }]);
 
 angular.module('quizApp').directive('takeQuizContainer', function () {
-  return {
-    restrict: 'E',
-    templateUrl: 'app/templates/Modal/takeQuizContainer.html'
-  }
+    return {
+        restrict: 'E',
+        templateUrl: 'app/templates/Modal/takeQuizContainer.html'
+    }
 });
 
 angular.module('quizApp').directive('quizSuccessContainer', function () {
-  return {
-    restrict: 'E',
-    templateUrl: 'app/templates/Modal/quizSuccessContainer.html'
-  }
+    return {
+        restrict: 'E',
+        templateUrl: 'app/templates/Modal/quizSuccessContainer.html'
+    }
 });
 
 angular.module('quizApp').directive('quizContainer', function () {
@@ -117,7 +126,7 @@ angular.module('quizApp').directive('quizContainer', function () {
 });
 
 angular.module('quizApp').directive('questionForm', function () {
-  return {
+    return {
     restrict: 'E',
     templateUrl: 'app/templates/forms/questionForm.html'
   }
@@ -137,102 +146,179 @@ angular.module('quizApp').directive('createQuizForm', function () {
   }
 });
 
-angular.module('quizApp').controller('quizController', ['$scope', 'Quiz', 'Question', 'appMode', 'appInformation', 'takeQuizMode', '$window',function (
-  $scope,
-  Quiz,
-  Question,
-  appMode,
-  appInformation,
-  takeQuizMode,
-  $window) {
+angular.module('quizApp').factory('Quiz', function () {
 
+    var Quiz = function () {
+        var self = this;
+        this.deep_copy_whitelist = [
+            'quizName', 'author', 'questionLength', 'choicesLength', 'questions'
+        ];
+
+        this.author = '';
+        this.quizName = '';
+        this.questionLength = 0;
+        this.questions = [];
+        this.choicesLength = 4;
+
+
+    };
+    return Quiz;
+});
+
+angular.module('quizApp').factory('Question', function () {
+
+    var Question = function () {
+        var self = this;
+        this.question = "";
+        this.choices = {
+            choice1: "",
+            choice2: "",
+            choice3: "",
+            choice4: ""
+        };
+        this.answer = "";
+    };
+    return Question;
+});
+
+angular.module('quizApp').controller('quizController', ['$scope', 'Quiz', 'Question', 'quizHelper', 'appMode', 'appInformation', '$timeout', 'takeQuizMode', '$window', '$q', function (
+    $scope,
+    Quiz,
+    Question,
+    quizHelper,
+    appMode,
+    appInformation,
+    takeQuizMode,
+    $timeout,
+    $window,
+    $q,
+    $location
+) {
     window.quizAppScope = $scope;
 
-    //These are the application modes
+
     $scope.appMode = appMode;
     $scope.takeQuizMode = takeQuizMode;
 
     $scope.appInformation = appInformation;
 
     $scope.quizMode = appMode.STARTAPP;
-    $scope.loaded = false;
+    $scope.quizLoaded = false;
     $scope.startQuiz = false;
 
-    //Using factories
+
     $scope.quiz = new Quiz();
     $scope.question = new Question();
-
-    //Helper variables
     $scope.potentialQuestion = null;
     $scope.count = 0;
-    $scope.countQuestion = 1;
+    $scope.countQuestion = 0;
     $scope.questionLimitExceeded = false;
 
-    //Validation variables
     $scope.validQuestion = true;
 
-    //Checking question variables
-    $scope.questionAnswered = false;
-    $scope.correctAnswer = [];
     $scope.currentQuestion = null;
+    $scope.correctAnswers = [];
+    $scope.questionAnswered = false;
 
+
+    $scope.clearField = function () {
+      $scope.quiz = new Quiz();
+        $scope.question = new Question();
+    };
 
     $scope.changeAppMode = function (mode) {
-      $scope.question = new Question();
-      $scope.quizMode = mode;
-      $scope.quizLoaded = false;
+        $scope.quiz = new Quiz();
+        $scope.question = new Question();
+        $scope.quizMode = mode;
+        $scope.quizLoaded = false;
     };
 
-
-    //This function will clear the fields
-    $scope.clearFields = function () {
-      $scope.quiz = new Quiz();
-      $scope.question = new Question();
-    };
-
-
-    //This func will create a quiz for us
     $scope.addQuiz = function () {
-      $scope.validQuestion = ''
-    }
-
-
-
-
-}]);
-
-angular.module('quizApp').factory('Quiz', function () {
-
-  var Quiz = function () {
-    var self = this;
-    this.deep_copy_white = [
-      'quizName', 'author', 'questionLength', 'questions'
-    ];
-
-    this.author = '';
-    this.quizName = '';
-    this.questionLength = '';
-    this.question = [];
-    this.choiceslength = 4;
-  }
-  return Quiz;
-
-});
-
-angular.module('quizApp').factory('Question', function () {
-
-  var Question = function () {
-    var self = this;
-    this.question = '';
-    this.choices = {
-      choice1: '',
-      choice2: '',
-      choice3: '',
-      choice4: ''
+        quizHelper.addQuiz($scope.quiz);
+        if(appMode.CREATEQUIZ){
+           $scope.changeAppMode(appMode.ADDQUESTION);
+        }
     };
 
-    this.answer = '';
-  }
-  return Question;
-  
-});
+    $scope.addQuestion = function () {
+        $scope.validQuestion = quizHelper.checkValidQuestion($scope.question);
+        $('#selectionError').text("");
+        if (!$scope.validQuestion) {
+            return ;
+        }
+        if ($scope.question.answer === 0) {
+            $scope.validQuestion = false;
+            $('#selectionError').text("Select Correct Answer");
+            return;
+        }
+
+        quizHelper.sendQuestion($scope.question);
+        if ($scope.countQuestion < $scope.quiz.questionLength) {
+            $scope.countQuestion++;
+            $scope.question = new Question();
+        } else {
+            $scope.questionLimitExceeded = true;
+            quizHelper.addQuestionToQuiz($scope.quiz);
+            $scope.changeAppMode(appMode.SUCCESSQUIZ);
+        }
+    };
+
+    $scope.buildQuiz = function () {
+        quizHelper.saveQuizToJSON($scope.quiz);
+    };
+
+
+    $scope.printQuestion = function () {
+        $scope.potentialQuestion = quizHelper.jsonToParse();
+    };
+
+    $scope.openQuizToTake = function () {
+        $('#open-file').click().change(function (data) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                quizHelper.loadQuiz(reader.result);
+                if ($scope.quiz.quizName !== "") {
+                    $scope.quizLoaded = true;
+                    $scope.$digest();
+                }
+            };
+            reader.readAsText(data.target.files[0], "text/json;charset=utf-8");
+        });
+
+    };
+
+
+    $scope.letStartQuiz = function () {
+        $scope.startQuiz = true;
+        if ($scope.startQuiz) {
+            $scope.potentialQuestion = $scope.quiz.questions;
+        }
+    };
+
+    $scope.checkAnswer = function (answer) {
+        var correctAnswer = $scope.potentialQuestion[$scope.count].answer;
+        if (answer == correctAnswer) {
+            $scope.potentialQuestion[$scope.count].result = true;
+            $scope.potentialQuestion[$scope.count].selectedAnswer = answer;
+        } else {
+            $scope.potentialQuestion[$scope.count].result = false;
+            $scope.potentialQuestion[$scope.count].selectedAnswer = answer;
+        }
+        $scope.questionAnswered = true;
+    };
+
+
+
+    $scope.nextQuestion = function () {
+        if ($scope.count < $scope.potentialQuestion.length - 1) {
+            $scope.count++;
+            $scope.questionAnswered = false;
+        } else {
+            $scope.questionLimitExceeded = true;
+        }
+    };
+
+    $scope.restartApp = function () {
+        $window.location.reload();
+    };
+}]);

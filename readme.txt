@@ -3,4 +3,4 @@ Gulp configs:
  - build() builds 'dist' folder
  - buildLibs() builds compressed library files
 
-Video: 1:09:15
+Video: 2:35
